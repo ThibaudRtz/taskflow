@@ -7,6 +7,9 @@ import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  secret:
+    env.NEXTAUTH_SECRET ||
+    (process.env.NODE_ENV !== "production" ? "taskflow-dev-secret" : undefined),
   session: {
     strategy: "database",
   },
