@@ -4,10 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // The `url` property was removed from schema files in Prisma 7.
-  // Move your connection URL to prisma.config.ts for Migrate and
-  // pass the connection via the PrismaClient constructor (adapter or accelerateUrl).
-  // See: https://pris.ly/d/config-datasource
+  url      = env("DATABASE_URL")
 }
 
 enum TaskPriority {
@@ -17,99 +14,104 @@ enum TaskPriority {
 }
 
 model User {
-  id            String      @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?     @unique
+  email         String?   @unique
   emailVerified DateTime?
   image         String?
 
-  accounts      Account[]
-  sessions      Session[]
+  accounts Account[]
+  sessions Session[]
 
-  memberships   WorkspaceMember[]
-  ownedBoards   Board[]      @relation("BoardOwner")
-  createdTasks  Task[]       @relation("TaskCreator")
+  memberships     WorkspaceMember[]
+  ownedWorkspaces Workspace[]       @relation("WorkspaceOwner")
+  ownedBoards     Board[]           @relation("BoardOwner")
+  createdTasks    Task[]            @relation("TaskCreator")
 
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Workspace {
-  id          String            @id @default(cuid())
-  name        String
-  slug        String            @unique
+  id      String @id @default(cuid())
+  name    String
+  slug    String @unique
+  ownerId String
 
-  members     WorkspaceMember[]
-  boards      Board[]
+  owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members WorkspaceMember[]
+  boards  Board[]
 
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([ownerId])
 }
 
 model WorkspaceMember {
-  id          String      @id @default(cuid())
+  id          String @id @default(cuid())
   workspaceId String
   userId      String
-  role        String      @default("MEMBER")
+  role        String @default("MEMBER")
 
-  workspace   Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([workspaceId, userId])
 }
 
 model Board {
-  id            String      @id @default(cuid())
-  workspaceId   String
-  ownerId       String
-  name          String
-  description   String?
-  position      Int         @default(0)
+  id          String  @id @default(cuid())
+  workspaceId String
+  ownerId     String
+  name        String
+  description String?
+  position    Int     @default(0)
 
-  workspace     Workspace   @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-  owner         User        @relation("BoardOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  columns       Column[]
-  tasks         Task[]
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  owner     User      @relation("BoardOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  columns   Column[]
+  tasks     Task[]
 
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Column {
-  id          String      @id @default(cuid())
-  boardId     String
-  name        String
-  position    Int
+  id       String @id @default(cuid())
+  boardId  String
+  name     String
+  position Int
 
-  board       Board       @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  tasks       Task[]
+  board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks Task[]
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([boardId, position])
 }
 
 model Task {
-  id           String        @id @default(cuid())
-  boardId       String
-  columnId      String
-  createdById   String
-  title         String
-  description   String?
-  priority      TaskPriority @default(MEDIUM)
-  position      Int
-  dueDate       DateTime?
+  id          String       @id @default(cuid())
+  boardId     String
+  columnId    String
+  createdById String
+  title       String
+  description String?
+  priority    TaskPriority @default(MEDIUM)
+  position    Int
+  dueDate     DateTime?
 
-  board         Board         @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  column        Column        @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  createdBy     User          @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  board     Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  column    Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  createdBy User   @relation("TaskCreator", fields: [createdById], references: [id], onDelete: Cascade)
 
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([columnId, position])
   @@index([boardId])
