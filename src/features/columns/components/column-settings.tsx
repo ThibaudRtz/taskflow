@@ -44,10 +44,10 @@ interface ColumnSettingsProps {
 
 export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
   const router = useRouter();
-  
+
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  
+
   const [newTitle, setNewTitle] = useState(columnTitle);
   const [isRenaming, setIsRenaming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -58,10 +58,13 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
       setShowRenameDialog(false);
       return;
     }
-    
+
     setIsRenaming(true);
     try {
-      const result = await renameColumn({ id: columnId, title: newTitle.trim() });
+      const result = await renameColumn({
+        id: columnId,
+        title: newTitle.trim(),
+      });
       if (result.error) {
         toast.error(result.error);
         return;
@@ -98,7 +101,11 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground"
+          >
             <MoreHorizontal className="size-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -108,7 +115,7 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
             Rename Column
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => setShowDeleteDialog(true)}
             className="text-destructive focus:text-destructive"
           >
@@ -119,10 +126,13 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
       </DropdownMenu>
 
       {/* Rename Dialog */}
-      <Dialog open={showRenameDialog} onOpenChange={(open) => {
-        setShowRenameDialog(open);
-        if (!open) setNewTitle(columnTitle);
-      }}>
+      <Dialog
+        open={showRenameDialog}
+        onOpenChange={(open) => {
+          setShowRenameDialog(open);
+          if (!open) setNewTitle(columnTitle);
+        }}
+      >
         <DialogContent>
           <form onSubmit={handleRename}>
             <DialogHeader>
@@ -145,9 +155,9 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
               </div>
             </div>
             <DialogFooter>
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={() => setShowRenameDialog(false)}
                 disabled={isRenaming}
               >
@@ -167,13 +177,15 @@ export function ColumnSettings({ columnId, columnTitle }: ColumnSettingsProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete the column
-              <strong> &quot;{columnTitle}&quot;</strong> and remove all its tasks.
+              This action cannot be undone. This will permanently delete the
+              column
+              <strong> &quot;{columnTitle}&quot;</strong> and remove all its
+              tasks.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
+            <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
                 handleDelete();

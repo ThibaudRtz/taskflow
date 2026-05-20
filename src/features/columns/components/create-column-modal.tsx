@@ -7,7 +7,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { createColumn } from "../actions/create-column";
-import { createColumnSchema, type CreateColumnSchema } from "../validations/column.schema";
+import {
+  createColumnSchema,
+  type CreateColumnSchema,
+} from "../validations/column.schema";
 
 import {
   Dialog,
@@ -33,7 +36,11 @@ interface CreateColumnModalProps {
   boardId: string;
 }
 
-export function CreateColumnModal({ isOpen, setIsOpen, boardId }: CreateColumnModalProps) {
+export function CreateColumnModal({
+  isOpen,
+  setIsOpen,
+  boardId,
+}: CreateColumnModalProps) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -94,7 +101,11 @@ export function CreateColumnModal({ isOpen, setIsOpen, boardId }: CreateColumnMo
                 <FormItem>
                   <FormLabel>Column Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. In Progress" disabled={isLoading} {...field} />
+                    <Input
+                      placeholder="e.g. In Progress"
+                      disabled={isLoading}
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

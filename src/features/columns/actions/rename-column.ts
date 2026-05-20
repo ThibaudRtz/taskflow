@@ -27,9 +27,9 @@ export async function renameColumn(input: z.infer<typeof renameColumnSchema>) {
     include: {
       board: {
         include: {
-          workspace: { select: { slug: true } }
-        }
-      }
+          workspace: { select: { slug: true } },
+        },
+      },
     },
   });
 
@@ -43,7 +43,9 @@ export async function renameColumn(input: z.infer<typeof renameColumnSchema>) {
       data: { title },
     });
 
-    revalidatePath(`/dashboard/${column.board.workspace.slug}/boards/${column.boardId}`);
+    revalidatePath(
+      `/dashboard/${column.board.workspace.slug}/boards/${column.boardId}`,
+    );
     return { success: true };
   } catch (error) {
     return { error: "Failed to rename column" };

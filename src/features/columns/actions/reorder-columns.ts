@@ -6,7 +6,9 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { reorderColumnsSchema } from "../validations/reorder.schema";
 
-export async function reorderColumns(input: z.infer<typeof reorderColumnsSchema>) {
+export async function reorderColumns(
+  input: z.infer<typeof reorderColumnsSchema>,
+) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -28,8 +30,8 @@ export async function reorderColumns(input: z.infer<typeof reorderColumnsSchema>
       ownerId: session.user.id,
     },
     include: {
-      workspace: { select: { slug: true } }
-    }
+      workspace: { select: { slug: true } },
+    },
   });
 
   if (!board) {
@@ -41,7 +43,7 @@ export async function reorderColumns(input: z.infer<typeof reorderColumnsSchema>
       prisma.column.update({
         where: { id: item.id },
         data: { order: item.order },
-      })
+      }),
     );
 
     await prisma.$transaction(transactions);

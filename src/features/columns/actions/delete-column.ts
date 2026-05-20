@@ -17,9 +17,9 @@ export async function deleteColumn(id: string) {
     include: {
       board: {
         include: {
-          workspace: { select: { slug: true } }
-        }
-      }
+          workspace: { select: { slug: true } },
+        },
+      },
     },
   });
 
@@ -32,7 +32,9 @@ export async function deleteColumn(id: string) {
       where: { id },
     });
 
-    revalidatePath(`/dashboard/${column.board.workspace.slug}/boards/${column.boardId}`);
+    revalidatePath(
+      `/dashboard/${column.board.workspace.slug}/boards/${column.boardId}`,
+    );
     return { success: true };
   } catch (error) {
     return { error: "Failed to delete column" };

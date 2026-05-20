@@ -6,7 +6,7 @@ export const reorderColumnsSchema = z.object({
     z.object({
       id: z.string(),
       order: z.number(),
-    })
+    }),
   ),
 });
 
