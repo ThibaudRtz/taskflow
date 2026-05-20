@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { getUserWorkspaces } from "@/features/workspaces/queries/get-workspaces";
+import { getUserWorkspacesWithBoards } from "@/features/workspaces/queries/get-workspaces-with-boards";
 import { WorkspaceSwitcher } from "@/features/workspaces/components/workspace-switcher";
 import { SidebarNav } from "./sidebar-nav";
+import { BoardList } from "@/features/boards/components/board-list";
 
 export async function Sidebar({ className }: { className?: string }) {
-  const workspaces = await getUserWorkspaces();
+  const workspaces = await getUserWorkspacesWithBoards();
 
   return (
     <aside
@@ -26,6 +27,8 @@ export async function Sidebar({ className }: { className?: string }) {
       </div>
 
       <SidebarNav />
+
+      <BoardList workspaces={workspaces} />
     </aside>
   );
 }

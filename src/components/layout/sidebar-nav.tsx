@@ -16,7 +16,6 @@ export function SidebarNav() {
 
   const navItems = [
     { href: basePath, label: "Overview", icon: LayoutDashboard },
-    { href: `${basePath}/boards`, label: "Boards", icon: KanbanSquare },
     { href: `${basePath}/settings`, label: "Settings", icon: Settings },
   ];
 
