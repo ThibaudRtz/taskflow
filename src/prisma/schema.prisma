@@ -83,10 +83,10 @@ model Board {
 }
 
 model Column {
-  id       String @id @default(cuid())
-  boardId  String
-  name     String
-  position Int
+  id      String @id @default(cuid())
+  boardId String
+  title   String
+  order   Int
 
   board Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
   tasks Task[]
@@ -94,7 +94,7 @@ model Column {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([boardId, position])
+  @@index([boardId, order])
 }
 
 model Task {
