@@ -12,6 +12,13 @@ export async function getColumnsByBoardId(boardId: string, ownerId: string) {
           orderBy: {
             order: "asc",
           },
+          include: {
+            tasks: {
+              orderBy: {
+                order: "asc",
+              },
+            },
+          },
         },
       },
     });
