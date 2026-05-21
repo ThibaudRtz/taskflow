@@ -16,6 +16,9 @@
     "db:format": "prisma format --schema src/prisma/schema.prisma",
     "postinstall": "prisma generate --schema src/prisma/schema.prisma"
   },
+  "prisma": {
+    "schema": "src/prisma/schema.prisma"
+  },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
     "@hookform/resolvers": "^5.2.2",
